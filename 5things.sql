@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2022 at 03:50 AM
+-- Generation Time: Apr 02, 2022 at 05:35 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -34,13 +34,10 @@ CREATE TABLE `things` (
   `sqltime` timestamp NOT NULL DEFAULT current_timestamp(),
   `ipsubmit` varchar(40) NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 1,
-  `blank1` int(11) DEFAULT NULL,
+  `ipforward` int(11) DEFAULT NULL,
   `blank2` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for dumped tables
---
 
 --
 -- Indexes for table `things`

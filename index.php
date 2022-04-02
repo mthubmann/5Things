@@ -39,13 +39,15 @@
 	
 	
 	$db->query_prepared('SELECT * FROM things WHERE active=1 ORDER BY id DESC LIMIT 5',[]);
-	//$db->debug();
 	$result = $db->queryResult();
-	//print_r($result);
+	$db->debug();
+	print_r($result);
 	$ShortTermMem = [];
-	foreach ($result as $row) {
-		array_push($ShortTermMem,['id'=>$row->id,'text'=>$row->itemtext,'time'=>$row->unixtime]);
-	};
+	//if(!count($result) == 0){
+		foreach ($result as $row) {
+			array_push($ShortTermMem,['id'=>$row->id,'text'=>$row->itemtext,'time'=>$row->unixtime]);
+		};
+	//};
 	//print_r($ShortTermMem);
 
 
@@ -67,6 +69,7 @@ $_SESSION['rand'] = rand();
 <div class="container">
 	<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
 	<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+	<image src="<?php echo $logo;?>" height="32">
 	<span class="fs-4">Last 5 Things</span>
 	</a>
 
@@ -134,7 +137,9 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 				<li class="nav-item">
 				<a class="nav-link active" aria-current="page" href="https://github.com/mthubmann/5Things">5 Things on GitHub</a>
 				</li>
-
+				<li class="nav-item">
+					<a class="nav-link" ><?php echo $address;?> &copy; <?php echo date("Y");?> </a>
+				</li>
 			</ul>
 		</div>
 	</div>
