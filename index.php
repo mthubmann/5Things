@@ -1,4 +1,7 @@
 <?php
+require 'vendor/autoload.php';
+
+
 $ShortTermMem=array("http://localhost/5Things/", "https://www.youtube.com/watch?v=RHzhw97F7n4","Order Number: W882903276","https://github.com/ezSQL/ezsql","http://192.168.0.253/HomeNAS");
 
 
