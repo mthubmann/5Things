@@ -34,6 +34,16 @@
 			$db->query_prepared('UPDATE things SET active=0 WHERE id = ?;',[$_POST['id']]);
 			//$db->debug();
 			break;
+		case 'login':
+			$db->query_prepared('SELECT * FROM security WHERE param="PW_hash"',[]);
+			$result = $db->queryResult();
+			if($result[0]->value == 'null'){
+				//do something here to create the new password...
+			}
+			else{
+				//check the login
+			};
+			break;
 		};
 	};
 	
@@ -58,6 +68,7 @@
 
 //echo $_POST['action'];
 $_SESSION['rand'] = rand();
+if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 ?>
 <!doctype html>
 <html lang="en">
@@ -87,17 +98,35 @@ $_SESSION['rand'] = rand();
 		<div class="col">
 			
 			
-			
-			<form action="http://localhost/5Things/" method="POST">
-				<input type="hidden" name="action" value="addItem">
-				<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
-				<div class="input-group mb-3">
-					<span class="input-group-text" id="basic-addon3">Remember This</span>
-					<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">
-					<button class="btn btn-primary" type="submit">Submit form</button>
-					
-				</div>
-			</form>
+<?php
+	if(($PW_req==true && $_SESSION['logged']==true) || $PW_req==false){
+		//serve the input item
+		echo '<form action="http://localhost/5Things/" method="POST">';
+		echo '	<input type="hidden" name="action" value="addItem">';
+		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
+		echo '	<div class="input-group mb-3">';
+		echo '		<span class="input-group-text" id="basic-addon3">Remember This</span>';
+		echo '		<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">';
+		echo '		<button class="btn btn-primary" type="submit">Submit form</button>';
+		echo '	</div>';
+		echo '</form>';	
+	}
+	else{
+		echo '<form action="http://localhost/5Things/" method="POST">';
+		echo '	<input type="hidden" name="action" value="login">';
+		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
+		echo '	<div class="input-group mb-3">';
+		echo '		<span class="input-group-text" id="basic-addon3">Password</span>';
+		echo '		<input type="text" class="form-control" id="PW" name="PW" aria-describedby="basic-addon3">';
+		echo '		<button class="btn btn-primary" type="submit">Submit form</button>';
+		echo '	</div>';
+		echo '</form>';	
+	};
+
+
+
+?>
+
 			
 			
 			
