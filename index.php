@@ -27,10 +27,11 @@
 		$_SESSION['logged'] = false;
 		$_SESSION['key'] = "";
 	};
+	$qryRslt = null;
 // */
 
 	if(isset($_POST['action']) && $_SESSION['rand'] == $_POST['rand']){
-		print_r($_POST);
+		//print_r($_POST);
 		//print_r($_SERVER);
 		switch($_POST['action']){
 			case 'addItem':
@@ -112,25 +113,29 @@
 		};
 	};
 	
+	$result = null;
+	$row = null;
+	//$db->debug();
+	//$db->query_prepared('SELECT * FROM things',[]);//maybe this will work?
+	//$db->debug();
+	$result = null;
+	$row = null;
 	$db->query_prepared('SELECT * FROM things WHERE active=1 ORDER BY id DESC LIMIT 5',[]);
 	//$db->debug();
 	$result = $db->queryResult();
-	
 	//print_r($result);
+	if(isset($result[0]->value)){$result = [];};
 	$ShortTermMem = [];
 	//echo count($result);
 	//if(count($result) <> 0){
 	if(is_array($result)){
 		foreach ($result as $row) {
+			//print_r($row);
 			array_push($ShortTermMem,['id'=>$row->id,'text'=>$row->itemtext,'time'=>$row->unixtime]);
 		};
 	};
 	//print_r($ShortTermMem);
-
-
-
-
-
+	
 //echo $_POST['action'];
 $_SESSION['rand'] = rand();
 if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
