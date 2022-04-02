@@ -1,16 +1,15 @@
 <?php
-require 'config.php';
-require 'vendor/autoload.php';
+	require 'config.php';
+	require 'vendor/autoload.php';
 
-use ezsql\Database;
+	use ezsql\Database;
 
-//print_r($db_host_data);
-$db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
-$db->prepareOn();
-$db->setDebug_Echo_Is_On(true);
-$db->connect();
+	//print_r($db_host_data);
+	$db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
+	$db->prepareOn();
+	$db->setDebug_Echo_Is_On(true);
+	$db->connect();
 
-$ShortTermMem=array("http://localhost/5Things/", "https://www.youtube.com/watch?v=RHzhw97F7n4","Order Number: W882903276","https://github.com/ezSQL/ezsql","http://192.168.0.253/HomeNAS");
 	if(isset($_POST['action'])){
 		//print_r($_POST);
 		//print_r($_SERVER);
@@ -36,6 +35,17 @@ $ShortTermMem=array("http://localhost/5Things/", "https://www.youtube.com/watch?
 			break;
 	};
 };
+	
+	
+	$db->query_prepared('SELECT * FROM things WHERE active=1 ORDER BY id DESC LIMIT 5',[]);
+	//$db->debug();
+	$result = $db->queryResult();
+	//print_r($result);
+	$ShortTermMem = [];
+	foreach ($result as $row) {
+		array_push($ShortTermMem,['id'=>$row->id,'text'=>$row->itemtext,'time'=>$row->unixtime]);
+	};
+	//print_r($ShortTermMem);
 
 
 
@@ -84,11 +94,11 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	//echo $ii;
 	echo '<div class="card">';
 	echo '	<div class="card-header">';
-	echo '		Item #' , $ii;
+	echo '		Item #' , $ShortTermMem[$ii]['id'];
 	echo '	</div>';
 	echo '	<div class="card-body">';
 	echo '		<!--<h5 class="card-title">Card title</h5>!-->';
-	echo '		<p class="card-text">' , $ShortTermMem[$ii] , '</p>';
+	echo '		<p class="card-text">' , $ShortTermMem[$ii]['text'] , '</p>';
 	
 	echo '		<form action="http://localhost/5Things/" method="POST">';
 	echo '			<input type="hidden" name="action" value="removeItem">';
@@ -99,7 +109,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	//echo '		<a href="#" class="btn btn-primary">Remove</a>';
 	echo '	</div>';
 	echo '	<div class="card-footer text-muted">';
-	echo '		5 Minutes Ago';
+	echo '		',time()-$ShortTermMem[$ii]['time'],' Seconds Ago';
 	echo '	</div>';
 	echo '</div>';
 	echo '<br>';
@@ -108,7 +118,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 		</div>
 	</div>
 </div>
-
+<br><br>
 <?php //print_r($ShortTermMem); ?>
 
 <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
