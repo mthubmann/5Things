@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2022 at 05:35 AM
+-- Generation Time: Apr 03, 2022 at 12:09 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -24,6 +24,25 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `security`
+--
+
+CREATE TABLE `security` (
+  `param` varchar(250) NOT NULL,
+  `value` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `security`
+--
+
+INSERT INTO `security` (`param`, `value`) VALUES
+('key', 'null'),
+('PW_hash', 'null');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `things`
 --
 
@@ -38,6 +57,16 @@ CREATE TABLE `things` (
   `blank2` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `security`
+--
+ALTER TABLE `security`
+  ADD PRIMARY KEY (`param`),
+  ADD UNIQUE KEY `param` (`param`);
 
 --
 -- Indexes for table `things`

@@ -5,3 +5,5 @@ This is a simple php site that can be used to share the last 5 things added to t
 //TODO: Fix the bootstrap files so that a CDN is not required.
 
 //TODO: Look into the SQL query bleed that was occuring between the first and last queries. Resolved with a kludge, not a permanent fix?
+
+//TODO: Dark Mode.
