@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	require 'config.php';
 	require 'vendor/autoload.php';
 
@@ -10,7 +11,7 @@
 	$db->setDebug_Echo_Is_On(true);
 	$db->connect();
 
-	if(isset($_POST['action'])){
+	if(isset($_POST['action']) && $_SESSION['rand'] == $_POST['rand']){
 		//print_r($_POST);
 		//print_r($_SERVER);
 		switch($_POST['action']){
@@ -33,8 +34,8 @@
 			$db->query_prepared('UPDATE things SET active=0 WHERE id = ?;',[$_POST['id']]);
 			//$db->debug();
 			break;
+		};
 	};
-};
 	
 	
 	$db->query_prepared('SELECT * FROM things WHERE active=1 ORDER BY id DESC LIMIT 5',[]);
@@ -52,7 +53,7 @@
 
 
 //echo $_POST['action'];
-
+$_SESSION['rand'] = rand();
 ?>
 <!doctype html>
 <html lang="en">
@@ -81,6 +82,7 @@
 		<div class="col">
 			<form action="http://localhost/5Things/" method="POST">
 				<input type="hidden" name="action" value="addItem">
+				<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
 				<div class="input-group mb-3">
 					<span class="input-group-text" id="basic-addon3">Remember This</span>
 					<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">
@@ -94,7 +96,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	//echo $ii;
 	echo '<div class="card">';
 	echo '	<div class="card-header">';
-	echo '		Item #' , $ShortTermMem[$ii]['id'];
+	echo '		Item #' , $ii+1;
 	echo '	</div>';
 	echo '	<div class="card-body">';
 	echo '		<!--<h5 class="card-title">Card title</h5>!-->';
@@ -102,7 +104,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	
 	echo '		<form action="http://localhost/5Things/" method="POST">';
 	echo '			<input type="hidden" name="action" value="removeItem">';
-	echo '			<input type="hidden" name="id" value="' , $ii , '">';
+	echo '			<input type="hidden" name="id" value="' , $ShortTermMem[$ii]['id'] , '">';
 	echo '			<button class="btn btn-primary" type="submit">Remove</button>';
 	echo '		</form>';
 	
