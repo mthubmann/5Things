@@ -4,19 +4,33 @@
 	require 'vendor/autoload.php';
 
 	use ezsql\Database;
-	print_r($_SESSION);
+	//print_r($_SESSION);
 	if(!isset($_SESSION['login_attempt'])){$_SESSION['login_attempt'] = 0;};
 	if(!isset($_SESSION['last_attempt'])){$_SESSION['last_attempt'] = 0;};
 	if(!isset($_SESSION['rand'])){$_SESSION['login_attempt'] = 0;};
 	if(!isset($_SESSION['lockout'])){$_SESSION['lockout'] = false;};
+	if(!isset($_SESSION['key'])){$_SESSION['key'] = "";};
+	//print_r($_SESSION);
 	//print_r($db_host_data);
 	$db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
 	$db->prepareOn();
 	$db->setDebug_Echo_Is_On(true);
 	$db->connect();
 
+	//check the session key to make sure that the logged status is valid.
+	
+	$db->query_prepared('SELECT * FROM security WHERE param="key"',[]);
+	$qryRslt = $db->queryResult();
+	//$db->queryResult();
+	//$db->debug();
+	if($_SESSION['key'] <> $qryRslt[0]->value){
+		$_SESSION['logged'] = false;
+		$_SESSION['key'] = "";
+	};
+// */
+
 	if(isset($_POST['action']) && $_SESSION['rand'] == $_POST['rand']){
-		//print_r($_POST);
+		print_r($_POST);
 		//print_r($_SERVER);
 		switch($_POST['action']){
 			case 'addItem':
@@ -69,6 +83,9 @@
 				
 				if(isset($_SESSION['lockout']) && $_SESSION['lockout'] == true){$_POST['PW'] = "";};
 				if(password_verify($_POST['PW'],$result[0]->value)){
+					$db->query_prepared('SELECT * FROM security WHERE param="key"',[]);
+					$result = $db->queryResult();
+					$_SESSION['key'] = $result[0]->value;
 					$_SESSION['logged'] = true;
 				}
 				else{
@@ -83,13 +100,22 @@
 				};
 			};
 			break;
+		case 'logout':
+			$_SESSION['logged'] = false;
+			$_SESSION['key'] = "";
+			break;
+		case 'clearAll':
+			if($_SESSION['logged'] == true){
+				$db->query_prepared('UPDATE things SET active=0 ',[]);
+			};
+			break;
 		};
 	};
 	
-	
 	$db->query_prepared('SELECT * FROM things WHERE active=1 ORDER BY id DESC LIMIT 5',[]);
-	$result = $db->queryResult();
 	//$db->debug();
+	$result = $db->queryResult();
+	
 	//print_r($result);
 	$ShortTermMem = [];
 	//echo count($result);
@@ -115,7 +141,8 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="bootstrap.css">
-	<script type="text/javascript" src="bootstrap.min.js"></script>
+	
+	
 </head>
 <body>
 <div class="container">
@@ -126,8 +153,26 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 	</a>
 
 	<ul class="nav nav-pills">
-		<li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-		<li class="nav-item"><a href="#" class="nav-link">Clear</a></li>
+		<div class="dropdown">
+		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Menu
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+			<form action="http://localhost/5Things/" method="POST">
+			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
+			<input type="hidden" name="action" value="logout">
+			<button class="dropdown-item" href="#" type="submit">Logout</button>
+			</form>
+			<form action="http://localhost/5Things/" method="POST">
+			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
+			<input type="hidden" name="action" value="clearAll">
+			<button class="dropdown-item" href="#" type="submit">Clear All</button>
+			</form>
+		  </div>
+		</div>
+		
+		
+		<!--<li class="nav-item"><a href="#" class="nav-link">Clear</a></li>!-->
 	</ul>
 	</header>
 </div>
@@ -183,6 +228,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	
 	echo '		<form action="http://localhost/5Things/" method="POST">';
 	echo '			<input type="hidden" name="action" value="removeItem">';
+	echo '			<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
 	echo '			<input type="hidden" name="id" value="' , $ShortTermMem[$ii]['id'] , '">';
 	echo '			<button class="btn btn-primary" type="submit">Remove</button>';
 	echo '		</form>';
@@ -220,5 +266,11 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 		</div>
 	</div>
 </nav>
+<!--<script type="text/javascript" src="jquery.js"></script>!-->
+<!--<script type="text/javascript" src="bootstrap.bundle.min.js"></script>!-->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
