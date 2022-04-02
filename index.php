@@ -7,24 +7,34 @@ use ezsql\Database;
 //print_r($db_host_data);
 $db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
 $db->prepareOn();
+$db->setDebug_Echo_Is_On(true);
+$db->connect();
 
 $ShortTermMem=array("http://localhost/5Things/", "https://www.youtube.com/watch?v=RHzhw97F7n4","Order Number: W882903276","https://github.com/ezSQL/ezsql","http://192.168.0.253/HomeNAS");
-if(isset($_POST['action'])){
-	//print_r($_POST);
-	//print_r($_SERVER);
-	
-	$values = [];
-	$values['itemtext'] = $_POST['inputText'];
-	$values['unixtime'] = time();
-	$values['ipsubmit'] = $_SERVER['REMOTE_ADDR'];
-	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
-		$values['ipforward'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	}
-	else{
-		$values['ipforward'] = null;
+	if(isset($_POST['action'])){
+		//print_r($_POST);
+		//print_r($_SERVER);
+		switch($_POST['action']){
+			case 'addItem':
+				$values = [];
+				$values['itemtext'] = $_POST['inputText'];
+				$values['unixtime'] = time();
+				$values['ipsubmit'] = $_SERVER['REMOTE_ADDR'];
+				if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+					$values['ipforward'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+				}
+				else{
+					$values['ipforward'] = null;
+				};
+				//print_r($values);
+				$db->insert('things', $values);
+			break;
+		case 'removeItem':
+			echo $_POST['id'];
+			$db->query_prepared('UPDATE things SET active=0 WHERE id = ?;',[$_POST['id']]);
+			//$db->debug();
+			break;
 	};
-	//print_r($values);
-	$db->insert('things', $values);
 };
 
 
@@ -79,7 +89,14 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	echo '	<div class="card-body">';
 	echo '		<!--<h5 class="card-title">Card title</h5>!-->';
 	echo '		<p class="card-text">' , $ShortTermMem[$ii] , '</p>';
-	echo '		<a href="#" class="btn btn-primary">Remove</a>';
+	
+	echo '		<form action="http://localhost/5Things/" method="POST">';
+	echo '			<input type="hidden" name="action" value="removeItem">';
+	echo '			<input type="hidden" name="id" value="' , $ii , '">';
+	echo '			<button class="btn btn-primary" type="submit">Remove</button>';
+	echo '		</form>';
+	
+	//echo '		<a href="#" class="btn btn-primary">Remove</a>';
 	echo '	</div>';
 	echo '	<div class="card-footer text-muted">';
 	echo '		5 Minutes Ago';
