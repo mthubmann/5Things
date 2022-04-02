@@ -1,9 +1,37 @@
 <?php
+require 'config.php';
 require 'vendor/autoload.php';
 
+use ezsql\Database;
+
+//print_r($db_host_data);
+$db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
+$db->prepareOn();
 
 $ShortTermMem=array("http://localhost/5Things/", "https://www.youtube.com/watch?v=RHzhw97F7n4","Order Number: W882903276","https://github.com/ezSQL/ezsql","http://192.168.0.253/HomeNAS");
+if(isset($_POST['action'])){
+	//print_r($_POST);
+	//print_r($_SERVER);
+	
+	$values = [];
+	$values['itemtext'] = $_POST['inputText'];
+	$values['unixtime'] = time();
+	$values['ipsubmit'] = $_SERVER['REMOTE_ADDR'];
+	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+		$values['ipforward'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	}
+	else{
+		$values['ipforward'] = null;
+	};
+	//print_r($values);
+	$db->insert('things', $values);
+};
 
+
+
+
+
+//echo $_POST['action'];
 
 ?>
 <!doctype html>
@@ -31,6 +59,15 @@ $ShortTermMem=array("http://localhost/5Things/", "https://www.youtube.com/watch?
 <div class="container" style="max-width: 970px;">
 	<div class="row justify-content-center">
 		<div class="col">
+			<form action="http://localhost/5Things/" method="POST">
+				<input type="hidden" name="action" value="addItem">
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="basic-addon3">Remember This</span>
+					<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">
+					<button class="btn btn-primary" type="submit">Submit form</button>
+					
+				</div>
+			</form>
 			<p class="h1">Here's the last 5 things for you to remember</p>
 <?php
 for($ii = 0;$ii<count($ShortTermMem);$ii++){
