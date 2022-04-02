@@ -4,7 +4,11 @@
 	require 'vendor/autoload.php';
 
 	use ezsql\Database;
-
+	print_r($_SESSION);
+	if(!isset($_SESSION['login_attempt'])){$_SESSION['login_attempt'] = 0;};
+	if(!isset($_SESSION['last_attempt'])){$_SESSION['last_attempt'] = 0;};
+	if(!isset($_SESSION['rand'])){$_SESSION['login_attempt'] = 0;};
+	if(!isset($_SESSION['lockout'])){$_SESSION['lockout'] = false;};
 	//print_r($db_host_data);
 	$db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
 	$db->prepareOn();
@@ -39,9 +43,44 @@
 			$result = $db->queryResult();
 			if($result[0]->value == 'null'){
 				//do something here to create the new password...
+				$newPW = password_hash($_POST['PW'], PASSWORD_DEFAULT);
+				//echo $newPW;
+				$db->query_prepared('UPDATE security SET value=? WHERE param = "PW_hash";',[$newPW]);
+				//$db->queryResult();
+				//$db->debug();
+				//generate the key variable
+				$str = rand();
+				$key = hash("sha256", $str);
+				$db->query_prepared('UPDATE security SET value=? WHERE param = "key";',[$key]);
+				$_SESSION['key'] = $key;
+				$_SESSION['logged'] = true;
 			}
 			else{
 				//check the login
+				$db->query_prepared('SELECT * FROM security WHERE param="PW_hash"',[]);
+				$result = $db->queryResult();
+				//set the password submitted to blank if too many attempts have been made.
+				//if($_SESSION['last_attempt'] > time()-3000){echo "True";};
+				if($_SESSION['last_attempt'] < time()-3000){
+					//resets the login counter after 5 minutes
+					$_SESSION['login_attempt'] = 0;
+					$_SESSION['lockout'] = false;
+				};
+				
+				if(isset($_SESSION['lockout']) && $_SESSION['lockout'] == true){$_POST['PW'] = "";};
+				if(password_verify($_POST['PW'],$result[0]->value)){
+					$_SESSION['logged'] = true;
+				}
+				else{
+					$_SESSION['logged'] = false;
+					if(!isset($_SESSION['login_attempt'])){$_SESSION['login_attempt'] = 1;};
+					if(!isset($_SESSION['last_attempt'])){$_SESSION['last_attempt'] = time();};
+					$_SESSION['login_attempt'] = $_SESSION['login_attempt'] + 1;
+					echo $_SESSION['login_attempt'];
+					if($_SESSION['login_attempt'] >=$login_attempt_limit){
+						$_SESSION['lockout'] = true;
+					};
+				};
 			};
 			break;
 		};
