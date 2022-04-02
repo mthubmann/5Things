@@ -40,14 +40,16 @@
 	
 	$db->query_prepared('SELECT * FROM things WHERE active=1 ORDER BY id DESC LIMIT 5',[]);
 	$result = $db->queryResult();
-	$db->debug();
-	print_r($result);
+	//$db->debug();
+	//print_r($result);
 	$ShortTermMem = [];
-	//if(!count($result) == 0){
+	//echo count($result);
+	//if(count($result) <> 0){
+	if(is_array($result)){
 		foreach ($result as $row) {
 			array_push($ShortTermMem,['id'=>$row->id,'text'=>$row->itemtext,'time'=>$row->unixtime]);
 		};
-	//};
+	};
 	//print_r($ShortTermMem);
 
 
@@ -83,6 +85,9 @@ $_SESSION['rand'] = rand();
 <div class="container" style="max-width: 970px;">
 	<div class="row justify-content-center">
 		<div class="col">
+			
+			
+			
 			<form action="http://localhost/5Things/" method="POST">
 				<input type="hidden" name="action" value="addItem">
 				<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
@@ -93,6 +98,9 @@ $_SESSION['rand'] = rand();
 					
 				</div>
 			</form>
+			
+			
+			
 			<p class="h1">Here's the last 5 things for you to remember</p>
 <?php
 for($ii = 0;$ii<count($ShortTermMem);$ii++){
