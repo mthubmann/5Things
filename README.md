@@ -31,6 +31,8 @@ This simple webpage is intended to be used like a cross-platform clipboard. As a
 
 ## Future Improvements
 - Dark & Light Modes
+- Recognition of URLs to create links
+- Convert the seconds ago into a 'pretty print' detail of how long ago a thing happened
 - Correct all SQL Queries
 - SQL Query bleed
 - Replace all CDN Files with static files
