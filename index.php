@@ -3,6 +3,7 @@
 	session_start();
 	require 'config.php';
 	require 'vendor/autoload.php';
+	require_once 'TimeElapsed.php';
 
 	use ezsql\Database;
 	//print_r($_SESSION);
@@ -240,7 +241,8 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	//echo '		<a href="#" class="btn btn-primary">Remove</a>';
 	echo '	</div>';
 	echo '	<div class="card-footer text-muted">';
-	echo '		',time()-$ShortTermMem[$ii]['time'],' Seconds Ago';
+	$pretty_time = "@" . $ShortTermMem[$ii]['time'];
+	echo '		',time_elapsed_string($pretty_time);
 	echo '	</div>';
 	echo '</div>';
 	echo '<br>';
