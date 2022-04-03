@@ -76,8 +76,9 @@
 				$result = $db->queryResult();
 				//set the password submitted to blank if too many attempts have been made.
 				//if($_SESSION['last_attempt'] > time()-3000){echo "True";};
-				if($_SESSION['last_attempt'] < time()-3000){
+				if($_SESSION['last_attempt'] < time()-300){
 					//resets the login counter after 5 minutes
+					//echo time()-300;
 					$_SESSION['login_attempt'] = 0;
 					$_SESSION['lockout'] = false;
 				};
@@ -92,7 +93,7 @@
 				else{
 					$_SESSION['logged'] = false;
 					if(!isset($_SESSION['login_attempt'])){$_SESSION['login_attempt'] = 1;};
-					if(!isset($_SESSION['last_attempt'])){$_SESSION['last_attempt'] = time();};
+					$_SESSION['last_attempt'] = time();
 					$_SESSION['login_attempt'] = $_SESSION['login_attempt'] + 1;
 					echo $_SESSION['login_attempt'];
 					if($_SESSION['login_attempt'] >=$login_attempt_limit){
@@ -152,7 +153,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 <body>
 <div class="container">
 	<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-	<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+	<a href="<?php echo $address;?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
 	<image src="<?php echo $logo;?>" height="32">
 	<span class="fs-4">Last 5 Things</span>
 	</a>
@@ -163,12 +164,12 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 			Menu
 		  </button>
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-			<form action="http://localhost/5Things/" method="POST">
+			<form action="<?php echo $address;?>" method="POST">
 			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
 			<input type="hidden" name="action" value="logout">
 			<button class="dropdown-item" href="#" type="submit">Logout</button>
 			</form>
-			<form action="http://localhost/5Things/" method="POST">
+			<form action="<?php echo $address;?>" method="POST">
 			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
 			<input type="hidden" name="action" value="clearAll">
 			<button class="dropdown-item" href="#" type="submit">Clear All</button>
@@ -190,7 +191,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 <?php
 	if(($PW_req==true && $_SESSION['logged']==true) || $PW_req==false){
 		//serve the input item
-		echo '<form action="http://localhost/5Things/" method="POST">';
+		echo '<form action="' , $address , '" method="POST">';
 		echo '	<input type="hidden" name="action" value="addItem">';
 		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
 		echo '	<div class="input-group mb-3">';
@@ -201,7 +202,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 		echo '</form>';	
 	}
 	else{
-		echo '<form action="http://localhost/5Things/" method="POST">';
+		echo '<form action="' , $address , '" method="POST">';
 		echo '	<input type="hidden" name="action" value="login">';
 		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
 		echo '	<div class="input-group mb-3">';
@@ -216,9 +217,6 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 
 ?>
 
-			
-			
-			
 			<p class="h1">Here's the last 5 things for you to remember</p>
 <?php
 for($ii = 0;$ii<count($ShortTermMem);$ii++){
@@ -231,7 +229,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 	echo '		<!--<h5 class="card-title">Card title</h5>!-->';
 	echo '		<p class="card-text">' , $ShortTermMem[$ii]['text'] , '</p>';
 	
-	echo '		<form action="http://localhost/5Things/" method="POST">';
+	echo '		<form action="' , $address , '" method="POST">';
 	echo '			<input type="hidden" name="action" value="removeItem">';
 	echo '			<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
 	echo '			<input type="hidden" name="id" value="' , $ShortTermMem[$ii]['id'] , '">';
@@ -265,7 +263,7 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 				<a class="nav-link active" aria-current="page" href="https://github.com/mthubmann/5Things">5 Things on GitHub</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" ><?php echo $address;?> &copy; <?php echo date("Y");?> </a>
+					<a class="nav-link" ><?php echo $disp_address;?> &copy; <?php echo date("Y");?> </a>
 				</li>
 			</ul>
 		</div>

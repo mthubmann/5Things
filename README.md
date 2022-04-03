@@ -1,9 +1,15 @@
 # 5Things
 This is a simple php site that can be used to share the last 5 things added to the site between computers.
 
-//TODO: Allow the number of things that can be shown to be a parameter in the config table.
-//TODO: Fix the bootstrap files so that a CDN is not required.
+## Goal
+This simple webpage is intended to be used like a cross-platform clipboard. As a web app it can be accessed by several browsers. Just like a clipboard it is intended to only store a few things. THe preset is 5, but that can be configured to as long of a list as desired.
 
-//TODO: Look into the SQL query bleed that was occuring between the first and last queries. Resolved with a kludge, not a permanent fix?
+## Installation
 
-//TODO: Dark Mode.
+### Config Setup
+
+## Future Improvements
+- Dark & Light Modes
+- Correct all SQL Queries
+- SQL Query bleed
+- Replace all CDN Files with static files
