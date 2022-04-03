@@ -10,4 +10,5 @@ $PW_req=true;//default TRUE
 $num_things=5;//defailt 5, not currently in use 
 $login_attempt_limit=5;//default 5
 $login_lockout_duration=300;//default 300 (5 minutes)
+$mode="prd";//set to prd(production) or dev(development)
 ?>

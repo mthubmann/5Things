@@ -15,7 +15,7 @@
 	//print_r($db_host_data);
 	$db = Database::initialize('pdo', [$db_host_data, $db_user, $db_password]);
 	$db->prepareOn();
-	$db->setDebug_Echo_Is_On(true);
+	if($mode == "dev"){$db->setDebug_Echo_Is_On(true);};
 	$db->connect();
 
 	//check the session key to make sure that the logged status is valid.
