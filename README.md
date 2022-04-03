@@ -39,3 +39,4 @@ This simple webpage is intended to be used like a cross-platform clipboard. As a
 - Change password
 - Logoff all users
 - Background process to check if new things added without refreshing
+- Notifications for failed events

@@ -149,8 +149,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="bootstrap.css">
-	
-	
+	<meta name="5things-Version" content="0.1">
 </head>
 <body>
 <div class="container">
