@@ -1,4 +1,5 @@
 <?php
+	//version 0.1 https://github.com/mthubmann/5Things
 	session_start();
 	require 'config.php';
 	require 'vendor/autoload.php';
@@ -76,7 +77,7 @@
 				$result = $db->queryResult();
 				//set the password submitted to blank if too many attempts have been made.
 				//if($_SESSION['last_attempt'] > time()-3000){echo "True";};
-				if($_SESSION['last_attempt'] < time()-300){
+				if($_SESSION['last_attempt'] < time()-$login_lockout_duration){
 					//resets the login counter after 5 minutes
 					//echo time()-300;
 					$_SESSION['login_attempt'] = 0;
