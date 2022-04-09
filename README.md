@@ -40,3 +40,5 @@ This simple webpage is intended to be used like a cross-platform clipboard. As a
 - Logoff all users
 - Background process to check if new things added without refreshing
 - Notifications for failed events
+- Meta Tags
+- Favicon
