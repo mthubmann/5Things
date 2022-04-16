@@ -224,7 +224,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 		echo '	<div class="input-group mb-3">';
 		echo '		<span class="input-group-text" id="basic-addon3">Remember This</span>';
 		echo '		<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">';
-		echo '		<button class="btn btn-primary" type="submit">Submit form</button>';
+		echo '		<button class="btn btn-primary" type="submit">Submit</button>';
 		echo '	</div>';
 		echo '</form>';	
 	}
@@ -235,7 +235,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 		echo '	<div class="input-group mb-3">';
 		echo '		<span class="input-group-text" id="basic-addon3">Password</span>';
 		echo '		<input type="password" class="form-control" id="PW" name="PW" aria-describedby="basic-addon3">';
-		echo '		<button class="btn btn-primary" type="submit">Submit form</button>';
+		echo '		<button class="btn btn-primary" type="submit">Submit</button>';
 		echo '	</div>';
 		echo '</form>';	
 	};
@@ -303,5 +303,10 @@ for($ii = 0;$ii<count($ShortTermMem);$ii++){
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
 </body>
 </html>
