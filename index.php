@@ -25,9 +25,18 @@
 	$qryRslt = $db->queryResult();
 	//$db->queryResult();
 	//$db->debug();
-	if($_SESSION['key'] <> $qryRslt[0]->value){
+	if(isset($_COOKIE['key']) == false){
+		setcookie("key","");
+		$_COOKIE['key'] = "";
+	};
+	if($_SESSION['key'] == $qryRslt[0]->value || $_COOKIE['key'] == $qryRslt[0]->value ){
+		$_SESSION['logged'] = true;
+		$_SESSION['key'] = $qryRslt[0]->value;
+	}
+	else{
 		$_SESSION['logged'] = false;
 		$_SESSION['key'] = "";
+		setcookie("key","");
 	};
 	$qryRslt = null;
 // */
@@ -71,6 +80,7 @@
 				$db->query_prepared('UPDATE security SET value=? WHERE param = "key";',[$key]);
 				$_SESSION['key'] = $key;
 				$_SESSION['logged'] = true;
+				setcookie('key',$key);
 			}
 			else{
 				//check the login
@@ -91,6 +101,7 @@
 					$result = $db->queryResult();
 					$_SESSION['key'] = $result[0]->value;
 					$_SESSION['logged'] = true;
+					setcookie('key',$result[0]->value);
 				}
 				else{
 					$_SESSION['logged'] = false;
@@ -107,6 +118,16 @@
 		case 'logout':
 			$_SESSION['logged'] = false;
 			$_SESSION['key'] = "";
+			setcookie('key',"");
+			break;
+		case 'logoutAll':
+			$_SESSION['logged'] = false;
+			$str = rand();
+			$key = hash("sha256", $str);
+			$db->query_prepared('UPDATE security SET value=? WHERE param = "key";',[$key]);
+			//$_SESSION['key'] = $key;
+			$_SESSION['key'] = "";
+			setcookie('key',"");
 			break;
 		case 'clearAll':
 			if($_SESSION['logged'] == true){
@@ -172,6 +193,11 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 			</form>
 			<form action="<?php echo $address;?>" method="POST">
 			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
+			<input type="hidden" name="action" value="logoutAll">
+			<button class="dropdown-item" href="#" type="submit">Logout All</button>
+			</form>
+			<form action="<?php echo $address;?>" method="POST">
+			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
 			<input type="hidden" name="action" value="clearAll">
 			<button class="dropdown-item" href="#" type="submit">Clear All</button>
 			</form>
@@ -208,7 +234,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
 		echo '	<div class="input-group mb-3">';
 		echo '		<span class="input-group-text" id="basic-addon3">Password</span>';
-		echo '		<input type="text" class="form-control" id="PW" name="PW" aria-describedby="basic-addon3">';
+		echo '		<input type="password" class="form-control" id="PW" name="PW" aria-describedby="basic-addon3">';
 		echo '		<button class="btn btn-primary" type="submit">Submit form</button>';
 		echo '	</div>';
 		echo '</form>';	
