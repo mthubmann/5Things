@@ -37,8 +37,6 @@ This simple webpage is intended to be used like a cross-platform clipboard. As a
 - Replace all CDN Files with static files
 - Auto setup of databases without a sql file
 - Change password
-- Logoff all users
-- Background process to check if new things added without refreshing
+- Background process to check if new things added without refreshing (API method)
 - Notifications for failed events
 - Meta Tags
-- Favicon

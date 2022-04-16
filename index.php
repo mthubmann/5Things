@@ -171,6 +171,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="bootstrap.css">
 	<meta name="5things-Version" content="0.1">
+	 <link rel="icon" type="image/x-icon" href="<?php echo $favicon?>">
 </head>
 <body>
 <div class="container">
