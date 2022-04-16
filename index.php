@@ -60,7 +60,7 @@
 				$db->insert('things', $values);
 			break;
 		case 'removeItem':
-			echo $_POST['id'];
+			//echo $_POST['id'];
 			$db->query_prepared('UPDATE things SET active=0 WHERE id = ?;',[$_POST['id']]);
 			//$db->debug();
 			break;
