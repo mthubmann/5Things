@@ -186,21 +186,26 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 			Menu
 		  </button>
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-			<form action="<?php echo $address;?>" method="POST">
-			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
-			<input type="hidden" name="action" value="logout">
-			<button class="dropdown-item" href="#" type="submit">Logout</button>
-			</form>
-			<form action="<?php echo $address;?>" method="POST">
-			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
-			<input type="hidden" name="action" value="logoutAll">
-			<button class="dropdown-item" href="#" type="submit">Logout All</button>
-			</form>
-			<form action="<?php echo $address;?>" method="POST">
-			<input type="hidden" name="rand" value="<?php echo $_SESSION['rand'];?>">
-			<input type="hidden" name="action" value="clearAll">
-			<button class="dropdown-item" href="#" type="submit">Clear All</button>
-			</form>
+<?php 
+	if(($PW_req==true && $_SESSION['logged']==true) || $PW_req==false){
+		echo	'<form action="', $address, '" method="POST">';
+		echo	'<input type="hidden" name="rand" value="' ,$_SESSION["rand"],'">';
+		echo	'<input type="hidden" name="action" value="logout">';
+		echo	'<button class="dropdown-item" href="#" type="submit">Logout</button>';
+		echo	'</form>';
+		echo	'<form action="', $address, '" method="POST">';
+		echo	'<input type="hidden" name="rand" value="' ,$_SESSION["rand"],'">';
+		echo	'<input type="hidden" name="action" value="logoutAll">';
+		echo	'<button class="dropdown-item" href="#" type="submit">Logout All</button>';
+		echo	'</form>';
+		echo	'<form action="', $address, '" method="POST">';
+		echo	'<input type="hidden" name="rand" value="' ,$_SESSION["rand"],'">';
+		echo	'<input type="hidden" name="action" value="clearAll">';
+		echo	'<button class="dropdown-item" href="#" type="submit">Clear All</button>';
+		echo	'</form>';
+	};
+?>
+			
 		  </div>
 		</div>
 		
