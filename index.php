@@ -48,7 +48,8 @@
 			case 'addItem':
 				if($_SESSION['logged'] == true){
 					$values = [];
-					$values['itemtext'] = $_POST['inputText'];
+					$inText = strip_tags($_POST['inputText']);
+					$values['itemtext'] = $inText;
 					$values['unixtime'] = time();
 					$values['ipsubmit'] = $_SERVER['REMOTE_ADDR'];
 					if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
