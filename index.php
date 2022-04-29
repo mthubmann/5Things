@@ -46,93 +46,98 @@
 		//print_r($_SERVER);
 		switch($_POST['action']){
 			case 'addItem':
-				$values = [];
-				$values['itemtext'] = $_POST['inputText'];
-				$values['unixtime'] = time();
-				$values['ipsubmit'] = $_SERVER['REMOTE_ADDR'];
-				if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
-					$values['ipforward'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+				if($_SESSION['logged'] == true){
+					$values = [];
+					$values['itemtext'] = $_POST['inputText'];
+					$values['unixtime'] = time();
+					$values['ipsubmit'] = $_SERVER['REMOTE_ADDR'];
+					if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+						$values['ipforward'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+					}
+					else{
+						$values['ipforward'] = null;
+					};
+					//print_r($values);
+					$db->insert('things', $values);
+				};
+			break;
+			case 'removeItem':
+				if($_SESSION['logged'] == true){
+					//echo $_POST['id'];
+					$db->query_prepared('UPDATE things SET active=0 WHERE id = ?;',[$_POST['id']]);
+					//$db->debug();
+				};
+				
+				break;
+			case 'login':
+				$db->query_prepared('SELECT * FROM security WHERE param="PW_hash"',[]);
+				$result = $db->queryResult();
+				if($result[0]->value == 'null'){
+					//do something here to create the new password...
+					$newPW = password_hash($_POST['PW'], PASSWORD_DEFAULT);
+					//echo $newPW;
+					$db->query_prepared('UPDATE security SET value=? WHERE param = "PW_hash";',[$newPW]);
+					//$db->queryResult();
+					//$db->debug();
+					//generate the key variable
+					$str = rand();
+					$key = hash("sha256", $str);
+					$db->query_prepared('UPDATE security SET value=? WHERE param = "key";',[$key]);
+					$_SESSION['key'] = $key;
+					$_SESSION['logged'] = true;
+					setcookie('key',$key);
 				}
 				else{
-					$values['ipforward'] = null;
+					//check the login
+					$db->query_prepared('SELECT * FROM security WHERE param="PW_hash"',[]);
+					$result = $db->queryResult();
+					//set the password submitted to blank if too many attempts have been made.
+					//if($_SESSION['last_attempt'] > time()-3000){echo "True";};
+					if($_SESSION['last_attempt'] < time()-$login_lockout_duration){
+						//resets the login counter after 5 minutes
+						//echo time()-300;
+						$_SESSION['login_attempt'] = 0;
+						$_SESSION['lockout'] = false;
+					};
+					
+					if(isset($_SESSION['lockout']) && $_SESSION['lockout'] == true){$_POST['PW'] = "";};
+					if(password_verify($_POST['PW'],$result[0]->value)){
+						$db->query_prepared('SELECT * FROM security WHERE param="key"',[]);
+						$result = $db->queryResult();
+						$_SESSION['key'] = $result[0]->value;
+						$_SESSION['logged'] = true;
+						setcookie('key',$result[0]->value);
+					}
+					else{
+						$_SESSION['logged'] = false;
+						if(!isset($_SESSION['login_attempt'])){$_SESSION['login_attempt'] = 1;};
+						$_SESSION['last_attempt'] = time();
+						$_SESSION['login_attempt'] = $_SESSION['login_attempt'] + 1;
+						echo $_SESSION['login_attempt'];
+						if($_SESSION['login_attempt'] >=$login_attempt_limit){
+							$_SESSION['lockout'] = true;
+						};
+					};
 				};
-				//print_r($values);
-				$db->insert('things', $values);
-			break;
-		case 'removeItem':
-			//echo $_POST['id'];
-			$db->query_prepared('UPDATE things SET active=0 WHERE id = ?;',[$_POST['id']]);
-			//$db->debug();
-			break;
-		case 'login':
-			$db->query_prepared('SELECT * FROM security WHERE param="PW_hash"',[]);
-			$result = $db->queryResult();
-			if($result[0]->value == 'null'){
-				//do something here to create the new password...
-				$newPW = password_hash($_POST['PW'], PASSWORD_DEFAULT);
-				//echo $newPW;
-				$db->query_prepared('UPDATE security SET value=? WHERE param = "PW_hash";',[$newPW]);
-				//$db->queryResult();
-				//$db->debug();
-				//generate the key variable
+				break;
+			case 'logout':
+				$_SESSION['logged'] = false;
+				$_SESSION['key'] = "";
+				setcookie('key',"");
+				break;
+			case 'logoutAll':
+				$_SESSION['logged'] = false;
 				$str = rand();
 				$key = hash("sha256", $str);
 				$db->query_prepared('UPDATE security SET value=? WHERE param = "key";',[$key]);
-				$_SESSION['key'] = $key;
-				$_SESSION['logged'] = true;
-				setcookie('key',$key);
-			}
-			else{
-				//check the login
-				$db->query_prepared('SELECT * FROM security WHERE param="PW_hash"',[]);
-				$result = $db->queryResult();
-				//set the password submitted to blank if too many attempts have been made.
-				//if($_SESSION['last_attempt'] > time()-3000){echo "True";};
-				if($_SESSION['last_attempt'] < time()-$login_lockout_duration){
-					//resets the login counter after 5 minutes
-					//echo time()-300;
-					$_SESSION['login_attempt'] = 0;
-					$_SESSION['lockout'] = false;
+				//$_SESSION['key'] = $key;
+				$_SESSION['key'] = "";
+				setcookie('key',"");
+				break;
+			case 'clearAll':
+				if($_SESSION['logged'] == true){
+					$db->query_prepared('UPDATE things SET active=0 ',[]);
 				};
-				
-				if(isset($_SESSION['lockout']) && $_SESSION['lockout'] == true){$_POST['PW'] = "";};
-				if(password_verify($_POST['PW'],$result[0]->value)){
-					$db->query_prepared('SELECT * FROM security WHERE param="key"',[]);
-					$result = $db->queryResult();
-					$_SESSION['key'] = $result[0]->value;
-					$_SESSION['logged'] = true;
-					setcookie('key',$result[0]->value);
-				}
-				else{
-					$_SESSION['logged'] = false;
-					if(!isset($_SESSION['login_attempt'])){$_SESSION['login_attempt'] = 1;};
-					$_SESSION['last_attempt'] = time();
-					$_SESSION['login_attempt'] = $_SESSION['login_attempt'] + 1;
-					echo $_SESSION['login_attempt'];
-					if($_SESSION['login_attempt'] >=$login_attempt_limit){
-						$_SESSION['lockout'] = true;
-					};
-				};
-			};
-			break;
-		case 'logout':
-			$_SESSION['logged'] = false;
-			$_SESSION['key'] = "";
-			setcookie('key',"");
-			break;
-		case 'logoutAll':
-			$_SESSION['logged'] = false;
-			$str = rand();
-			$key = hash("sha256", $str);
-			$db->query_prepared('UPDATE security SET value=? WHERE param = "key";',[$key]);
-			//$_SESSION['key'] = $key;
-			$_SESSION['key'] = "";
-			setcookie('key',"");
-			break;
-		case 'clearAll':
-			if($_SESSION['logged'] == true){
-				$db->query_prepared('UPDATE things SET active=0 ',[]);
-			};
 			break;
 		};
 	};
