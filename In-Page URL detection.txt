@@ -1,0 +1,38 @@
+list of top TLDs:
+.com
+.org
+.net
+.int
+.gov
+.mil
+
+Additional TLDs to include:
+.xyz
+.co
+.to
+.uk
+.au
+.as
+.by
+.me
+.cc
+.cn
+.fr
+.ca
+.sg
+.de
+.in
+.is
+.tv
+
+Process:
+Split " "
+loop [array length]
+	text.search array (maybe use /i as an argument?? try to do case insensitive)
+	if true
+		detect content before the TLD
+			if true
+				convert to <a>
+			end if
+	end if
+end loop

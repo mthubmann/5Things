@@ -34,9 +34,9 @@ This simple webpage is intended to be used like a cross-platform clipboard. As a
 - Recognition of URLs to create links
 - Correct all SQL Queries
 - SQL Query bleed
-- Replace all CDN Files with static files
 - Auto setup of databases without a sql file
 - Change password
 - Background process to check if new things added without refreshing (API method)
 - Notifications for failed events
 - Meta Tags
+- Bootstrap 5?
