@@ -176,6 +176,16 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="bootstrap.css">
+	<?php
+	if($_SESSION['logged'] == true){
+		echo '<script type="text/javascript" src="' . $address . 'page_js.js"></script>';
+	}
+	else{
+		echo '<script type="text/javascript" src="' . $address . 'page_js_lite.js"></script>';
+	};
+	?>
+	
+	
 	<meta name="5things-Version" content="0.1">
 	 <link rel="icon" type="image/x-icon" href="<?php echo $favicon?>">
 </head>
