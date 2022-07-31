@@ -178,10 +178,10 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 	<link rel="stylesheet" href="bootstrap.css">
 	<?php
 	if($_SESSION['logged'] == true){
-		echo '<script type="text/javascript" src="' . $address . 'page_js.js"></script>';
+		echo '<script type="text/javascript" src="' . $address . 'page_js.php"></script>';
 	}
 	else{
-		echo '<script type="text/javascript" src="' . $address . 'page_js_lite.js"></script>';
+		echo '<script type="text/javascript" src="' . $address . 'page_js_lite.php"></script>';
 	};
 	?>
 	
@@ -231,36 +231,46 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 	</ul>
 	</header>
 </div>
-  
+
+<?php echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">'; ?>
+
 <div class="container" style="max-width: 970px;">
 	<div class="row justify-content-center">
 		<div class="col">
-			
-			
+			<div id="inputbox">
+				<div class="input-group mb-3">
+				<span class="input-group-text" id="basic-addon3">Wait Wait</span>
+				<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3" disabled>
+				<button class="btn btn-primary" type="submit" disabled>Submit</button>
+				</div>
+			</div>
+		
 <?php
-	if(($PW_req==true && $_SESSION['logged']==true) || $PW_req==false){
-		//serve the input item
-		echo '<form action="' , $address , '" method="POST">';
-		echo '	<input type="hidden" name="action" value="addItem">';
-		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
-		echo '	<div class="input-group mb-3">';
-		echo '		<span class="input-group-text" id="basic-addon3">Remember This</span>';
-		echo '		<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">';
-		echo '		<button class="btn btn-primary" type="submit">Submit</button>';
-		echo '	</div>';
-		echo '</form>';	
-	}
-	else{
-		echo '<form action="' , $address , '" method="POST">';
-		echo '	<input type="hidden" name="action" value="login">';
-		echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
-		echo '	<div class="input-group mb-3">';
-		echo '		<span class="input-group-text" id="basic-addon3">Password</span>';
-		echo '		<input type="password" class="form-control" id="PW" name="PW" aria-describedby="basic-addon3">';
-		echo '		<button class="btn btn-primary" type="submit">Submit</button>';
-		echo '	</div>';
-		echo '</form>';	
-	};
+	//since this is to be handled by the JS files, this is now commented
+	
+	// if(($PW_req==true && $_SESSION['logged']==true) || $PW_req==false){
+		// //serve the input item
+		// echo '<form action="' , $address , '" method="POST">';
+		// echo '	<input type="hidden" name="action" value="addItem">';
+		// echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
+		// echo '	<div class="input-group mb-3">';
+		// echo '		<span class="input-group-text" id="basic-addon3">Remember This</span>';
+		// echo '		<input type="text" class="form-control" id="inputText" name="inputText" aria-describedby="basic-addon3">';
+		// echo '		<button class="btn btn-primary" type="submit">Submit</button>';
+		// echo '	</div>';
+		// echo '</form>';	
+	// }
+	// else{
+		// echo '<form action="' , $address , '" method="POST">';
+		// echo '	<input type="hidden" name="action" value="login">';
+		// echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">';
+		// echo '	<div class="input-group mb-3">';
+		// echo '		<span class="input-group-text" id="basic-addon3">Password</span>';
+		// echo '		<input type="password" class="form-control" id="PW" name="PW" aria-describedby="basic-addon3">';
+		// echo '		<button class="btn btn-primary" type="submit">Submit</button>';
+		// echo '	</div>';
+		// echo '</form>';	
+	// };
 
 
 
