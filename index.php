@@ -181,7 +181,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 		echo '<script type="text/javascript" src="' . $address . 'page_js.php"></script>';
 	}
 	else{
-		echo '<script type="text/javascript" src="' . $address . 'page_js_lite.php"></script>';
+		echo '<script type="text/javascript" src="' . $address . 'page_js_lite.js"></script>';
 	};
 	?>
 	
@@ -232,7 +232,7 @@ if(isset($_SESSION['logged']) == false){$_SESSION['logged'] = false;};
 	</header>
 </div>
 
-<?php echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '">'; ?>
+<?php echo '	<input type="hidden" name="rand" value="' , $_SESSION['rand'] , '" id="rand">'; ?>
 
 <div class="container" style="max-width: 970px;">
 	<div class="row justify-content-center">

@@ -30,6 +30,7 @@ This simple webpage is intended to be used like a cross-platform clipboard. As a
 - Each failed attempt will reset the counter, so wiht a 5 minute time and a 5 attempt limit, it would be possible to fail to login 5 times spreading out each attempt by 5 minutes and you will still be lockced out after the 5th attempt.
 
 ## Future Improvements
+- Should the js files be automatically generated at the server rather than being hosted as a PHP each time?? PROBABLY
 - Dark & Light Modes
 - Recognition of URLs to create links
 - Correct all SQL Queries
